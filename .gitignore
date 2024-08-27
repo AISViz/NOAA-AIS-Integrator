@@ -1,1 +1,4 @@
-./data/
+data/
+# Ignore PyCharm project files
+.idea/
+*.iml

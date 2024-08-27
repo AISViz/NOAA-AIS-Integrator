@@ -112,7 +112,7 @@ def unzip_into_directory(zip_path, output_folder="gdb/"):
     return gdb_folder_full_path
 
 
-def process_directory(curr_directory="zip/"):
+def process_directory(curr_directory="data/"):
     """
     Process the given directory to convert GDB files to CSV files using multi-threading.
 
@@ -132,4 +132,4 @@ def process_directory(curr_directory="zip/"):
 if __name__ == "__main__":
     process_directory()
     # Fix a filename to match the naming system of other files
-    os.rename("unified/May_Zone_18_UNIFIED.csv", "unified/Zone18_2009_05_UNIFIED.csv")
+    # os.rename("unified/May_Zone_18_UNIFIED.csv", "unified/Zone18_2009_05_UNIFIED.csv")

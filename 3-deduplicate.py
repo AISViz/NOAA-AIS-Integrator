@@ -1,41 +1,58 @@
-from concurrent.futures import ProcessPoolExecutor
-from glob import glob
-
-import subprocess
-import tempfile
 import os
-
-
-def remove_duplicates_with_awk(file_path):
+from glob import glob
+from concurrent.futures import ProcessPoolExecutor
+def remove_duplicates_python(file_path):
     """
-    Use awk to remove duplicate rows from a CSV file, keeping the header.
-    This function creates a temporary file securely for storing intermediate results.
+    Remove duplicate rows from a CSV file, keeping the header.
+    This function reads the file line by line to handle large files efficiently.
     """
-    with tempfile.NamedTemporaryFile(delete=False, mode='w', dir=os.path.dirname(file_path)) as temp_file:
-        temp_file_path = temp_file.name
-
-    # Construct the awk command to filter duplicates, preserving the header
-    awk_cmd = f"awk 'NR == 1 || !seen[$0]++' {file_path} > {temp_file_path}"
+    seen = set()
+    temp_file_path = file_path + ".tmp"
 
     try:
-        # Execute the awk command
-        subprocess.run(awk_cmd, shell=True, check=True, executable='/bin/bash')
-        # Replace the original file with the processed temporary file
-        os.rename(temp_file_path, file_path)
-        print(f"Processed and updated {file_path}")
-    except subprocess.CalledProcessError as e:
+        with open(file_path, 'r') as infile:
+            with open(temp_file_path, 'w') as outfile:
+                header = next(infile)
+                outfile.write(header)
+                seen.add(header.strip())
+
+                for line in infile:
+                    if line.strip() not in seen:
+                        outfile.write(line)
+                        seen.add(line.strip())
+
+        # Ensure the temporary file is not empty before replacing the original file
+        if os.path.getsize(temp_file_path) > 0:
+            os.replace(temp_file_path, file_path)
+            print(f"Processed and updated {file_path}")
+        else:
+            print(f"Temporary file {temp_file_path} is empty. Original file not replaced.")
+            os.remove(temp_file_path)
+
+    except Exception as e:
         print(f"Error processing {file_path}: {e}")
-        # Remove the temporary file in case of an error
-        os.remove(temp_file_path)
+        if os.path.exists(temp_file_path):
+            os.remove(temp_file_path)
 
 
 def process_files_in_parallel(directory):
     """
     Process CSV files in the specified directory in parallel, removing duplicates.
     """
+    if not os.path.exists(directory):
+        print(f"Directory '{directory}' does not exist.")
+        return
+
     csv_files = glob(os.path.join(directory, "*.csv"))
-    with ProcessPoolExecutor(max_workers=6) as executor:
-        executor.map(remove_duplicates_with_awk, csv_files)
+
+    if not csv_files:
+        print(f"No CSV files found in directory '{directory}'.")
+        return
+
+    max_workers = 4  # Adjust based on system capacity
+
+    with ProcessPoolExecutor(max_workers=max_workers) as executor:
+        executor.map(remove_duplicates_python, csv_files)
 
 
 if __name__ == "__main__":
