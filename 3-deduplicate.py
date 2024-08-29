@@ -49,7 +49,7 @@ def process_files_in_parallel(directory):
         print(f"No CSV files found in directory '{directory}'.")
         return
 
-    max_workers = 4  # Adjust based on system capacity
+    max_workers = 6  # Adjust based on system capacity
 
     with ProcessPoolExecutor(max_workers=max_workers) as executor:
         executor.map(remove_duplicates_python, csv_files)

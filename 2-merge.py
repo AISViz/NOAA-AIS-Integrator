@@ -24,6 +24,7 @@ def merge_files_by_month(directory, output_directory):
 
     # Process each group
     for month, files in file_groups.items():
+        print(f"Processing month {month}...")
         output_file = os.path.join(output_directory, f"AIS_{month}.csv")
         headers = None
 
