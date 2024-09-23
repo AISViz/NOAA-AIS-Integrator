@@ -6,6 +6,8 @@ import subprocess
 import zipfile
 import shutil
 import os
+import geopandas as gpd
+import fiona
 
 
 def convert_gdb_to_csv(zip_file, output_folder="csv/"):
@@ -17,12 +19,32 @@ def convert_gdb_to_csv(zip_file, output_folder="csv/"):
     :return: None
     """
     gdb_path = unzip_into_directory(zip_file)  # export and return the path
-    layers = subprocess.check_output(['ogrinfo', gdb_path]).decode().split('\n')
-    layers = [line.split(" ")[1] for line in layers if line.startswith("Layer:")]
+
+    os.makedirs(output_folder, exist_ok=True)
+    
+    layers = fiona.listlayers(gdb_path)
+
     file_identifier = gdb_path.split('/')[1].split('.')[0]
+
     for layer in layers:
-        csv_file = os.path.join(output_folder, f"{file_identifier}_{layer.split('_')[-1].split('.')[0]}.csv")
-        subprocess.run(['ogr2ogr', '-f', 'CSV', csv_file, gdb_path, layer, '-lco', 'GEOMETRY=AS_XY'])
+        try:
+            # Read the layer using GeoPandas
+            gdf = gpd.read_file(gdb_path, layer=layer)
+            
+            # Extract X (Longitude) and Y (Latitude) coordinates from the geometry column
+            if 'geometry' in gdf.columns:
+                gdf['X'] = gdf.geometry.x  # Longitude
+                gdf['Y'] = gdf.geometry.y  # Latitude
+
+            # Define CSV file path
+            csv_path = os.path.join(output_folder, f"{layer}.csv")
+
+            # Export to CSV
+            gdf.to_csv(csv_path, index=False)
+
+        except Exception as e:
+            print(f"Failed to process layer {file_identifier}_{layer}: {e}")
+        
     join_files(file_identifier)  # join the multiple layers into a single shared file format
 
 
@@ -35,12 +57,15 @@ def join_files(file_suffix, output_folder="unified/", csv_path="csv/"):
     :param csv_path: The path where the CSV files are located. Default is "csv/".
     :return: None
     """
-    broadcast_df = pd.read_csv(f'{csv_path}{file_suffix}_Broadcast.csv',
+    os.makedirs(output_folder, exist_ok=True)
+
+    broadcast_df = pd.read_csv(f'{csv_path}Broadcast.csv',
                                dtype={'MMSI': str, 'VoyageID': str}, low_memory=False, engine="c")
-    voyage_df = pd.read_csv(f'{csv_path}{file_suffix}_Voyage.csv',
+    voyage_df = pd.read_csv(f'{csv_path}Voyage.csv',
                             dtype={'VoyageID': str, 'MMSI': str}, low_memory=False, engine="c")
-    vessel_df = pd.read_csv(f'{csv_path}{file_suffix}_Vessel.csv',
+    vessel_df = pd.read_csv(f'{csv_path}Vessel.csv',
                             dtype={'MMSI': str}, low_memory=False, engine="c")
+
 
     # >>> perform the join between Broadcast and Vessel on 'MMSI'
     broadcast_vessel_joined = pd.merge(broadcast_df, vessel_df, on='MMSI', how='left')
@@ -63,7 +88,7 @@ def join_files(file_suffix, output_folder="unified/", csv_path="csv/"):
             'Name': 'VesselName'
         }
     )
-    # Optionally, save the final DataFrame to a new CSV file
+    # Save the final DataFrame to a new CSV file
     renamed_final_df.to_csv(f'{output_folder}/{file_suffix}_UNIFIED.csv', index=False)
 
 
