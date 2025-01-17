@@ -17,6 +17,7 @@ python 0-download-ais.py --start_year 2020 --end_year 2021
 python 1-zip2csv-2015-2023.py
 python 2-merge.py -i /unzipped -o /merged
 python 3-deduplicate.py 
-python 4-postgresql-database.py
+python 4-postgresql-database.py (not recommended)
+python 4-postgresql-database-noaa.py (recommended)
 ```
 
