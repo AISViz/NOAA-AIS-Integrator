@@ -1,4 +1,5 @@
 import os
+import argparse
 import csv
 from glob import glob
 
@@ -9,7 +10,7 @@ def get_month_from_filename(filename):
 
 
 def merge_files_by_month(directory, output_directory):
-    """Merge CSV files into separate files based on month."""
+    """Merge CSV files into separate files based on zones."""
     # Ensure the output directory exists
     if not os.path.exists(output_directory):
         os.makedirs(output_directory)
@@ -56,6 +57,20 @@ def merge_files_by_month(directory, output_directory):
 
 
 if __name__ == "__main__":
-    directory = 'zip/'  # Replace with your directory containing the CSV files
-    output_directory = 'merged/'  # Output directory for merged files
-    merge_files_by_month(directory, output_directory)
+    # Set up the argument parser
+    parser = argparse.ArgumentParser(description='Merge CSV files by month.')
+    parser.add_argument('-i', type=str, required=True, help='The directory containing the CSV files to be merged.')
+    parser.add_argument('-o', type=str, required=True, help='The directory where the merged files will be saved.')
+    
+    # Parse the arguments
+    args = parser.parse_args()
+
+    # Access the input and output directories from the arguments
+    input_directory = args.i
+    output_directory = args.o
+
+    # Ensure the output directory exists
+    if not os.path.exists(output_directory):
+        os.makedirs(output_directory)
+
+    merge_files_by_month(input_directory, output_directory)

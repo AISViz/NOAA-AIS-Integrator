@@ -35,8 +35,6 @@ def clean_csv(input_file):
         os.remove(output_file)  # Clean up the temporary file if something goes wrong
 
 
-
-
 def create_database(conn, dbname):
     """Create a new PostgreSQL database if it doesn't already exist."""
     conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
@@ -56,7 +54,7 @@ def create_table_from_csv(conn, table_name, csv_file):
         reader = csv.reader(f)
         headers = next(reader)
 
-        columns = ", ".join([f"{header} TEXT" for header in headers])
+        columns = ", ".join([f"{header} TEXT" for header in headers]) # This need to be changed as column data types varying
 
         with conn.cursor() as cursor:
             cursor.execute(f"CREATE TABLE IF NOT EXISTS {table_name} ({columns});")

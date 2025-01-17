@@ -37,7 +37,7 @@ def convert_gdb_to_csv(zip_file, output_folder="csv/"):
                 gdf['Y'] = gdf.geometry.y  # Latitude
 
             # Define CSV file path
-            csv_path = os.path.join(output_folder, f"{layer}.csv")
+            csv_path = os.path.join(output_folder, f"{file_identifier}_{layer}.csv")
 
             # Export to CSV
             gdf.to_csv(csv_path, index=False)
@@ -59,35 +59,43 @@ def join_files(file_suffix, output_folder="unified/", csv_path="csv/"):
     """
     os.makedirs(output_folder, exist_ok=True)
 
-    broadcast_df = pd.read_csv(f'{csv_path}Broadcast.csv',
+    broadcast_df = pd.read_csv(f'{csv_path}{file_suffix}_Broadcast.csv',
                                dtype={'MMSI': str, 'VoyageID': str}, low_memory=False, engine="c")
-    voyage_df = pd.read_csv(f'{csv_path}Voyage.csv',
+    voyage_df = pd.read_csv(f'{csv_path}{file_suffix}_Voyage.csv',
                             dtype={'VoyageID': str, 'MMSI': str}, low_memory=False, engine="c")
-    vessel_df = pd.read_csv(f'{csv_path}Vessel.csv',
+    vessel_df = pd.read_csv(f'{csv_path}{file_suffix}_Vessel.csv',
                             dtype={'MMSI': str}, low_memory=False, engine="c")
 
+    try:
+        # >>> perform the join between Broadcast and Vessel on 'MMSI'
+        broadcast_vessel_joined = pd.merge(broadcast_df, vessel_df, on='MMSI', how='left')
+        # >>> perform the join between the result of the first join and Voyage on 'VoyageID'
+        final_joined_df = pd.merge(broadcast_vessel_joined, voyage_df, on=['VoyageID', 'MMSI'], how='left')
+    
+    except Exception as e:
+        print(f"Failed to join data layers of {file_suffix}: {e}")
 
-    # >>> perform the join between Broadcast and Vessel on 'MMSI'
-    broadcast_vessel_joined = pd.merge(broadcast_df, vessel_df, on='MMSI', how='left')
-    # >>> perform the join between the result of the first join and Voyage on 'VoyageID'
-    final_joined_df = pd.merge(broadcast_vessel_joined, voyage_df, on=['VoyageID', 'MMSI'], how='left')
 
-    selected_final_df = final_joined_df[[
-        # Select and reorder the columns in the final joined DataFrame
-        'MMSI', 'BaseDateTime', 'Y', 'X', 'SOG', 'COG', 'Heading',
-        'Name', 'IMO', 'CallSign', 'VesselType', 'Status',
-        'Length', 'Width', 'Draught', 'Cargo'
-    ]]
+    try:
+        selected_final_df = final_joined_df[[
+            # Select and reorder the columns in the final joined DataFrame
+            'MMSI', 'BaseDateTime', 'Y', 'X', 'SOG', 'COG', 'Heading',
+            'Name', 'IMO', 'CallSign', 'VesselType', 'Status',
+            'Length', 'Width', 'Draught', 'Cargo'
+        ]]
 
-    # Renaming files to match more recent naming system
-    renamed_final_df = selected_final_df.rename(
-        columns={
-            'Y': 'LAT',
-            'X': 'LON',
-            'Draught': 'Draft',
-            'Name': 'VesselName'
-        }
-    )
+        # Renaming files to match more recent naming system
+        renamed_final_df = selected_final_df.rename(
+            columns={
+                'Y': 'LAT',
+                'X': 'LON',
+                'Draught': 'Draft',
+                'Name': 'VesselName'
+            }
+        )
+    except Exception as e:
+        print(f"Failed to select and join prefered fields of {file_suffix}: {e}")
+        
     # Save the final DataFrame to a new CSV file
     renamed_final_df.to_csv(f'{output_folder}/{file_suffix}_UNIFIED.csv', index=False)
 
@@ -144,7 +152,7 @@ def process_directory(curr_directory="data/"):
     :param curr_directory: The path of the current directory (default="zip/")
     :return: None
     """
-    with ProcessPoolExecutor() as executor:
+    with ProcessPoolExecutor(max_workers=4) as executor:
         futures = []  # store the results of the threads
         for zip_file in [os.path.join(curr_directory, d) for d in os.listdir(curr_directory) if d.endswith('.zip')]:
             futures.append(executor.submit(convert_gdb_to_csv, zip_file))
