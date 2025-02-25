@@ -1,0 +1,47 @@
+nohup: ignoring input
+Memory: 94.98GB remaining.  CPUs: 32.  Average file size: 2179.16MB  Spawning 6 workers
+processing /slow-array/NOAA/202408/AIS_2024_08_01.csv
+processing /slow-array/NOAA/202408/AIS_2024_08_02.csv
+processing /slow-array/NOAA/202408/AIS_2024_08_03.csv
+processing /slow-array/NOAA/202408/AIS_2024_08_04.csv
+processing /slow-array/NOAA/202408/AIS_2024_08_05.csv
+processing /slow-array/NOAA/202408/AIS_2024_08_06.csv
+processing /slow-array/NOAA/202408/AIS_2024_08_07.csv
+processing /slow-array/NOAA/202408/AIS_2024_08_08.csv
+processing /slow-array/NOAA/202408/AIS_2024_08_09.csv
+processing /slow-array/NOAA/202408/AIS_2024_08_10.csv
+processing /slow-array/NOAA/202408/AIS_2024_08_11.csv
+processing /slow-array/NOAA/202408/AIS_2024_08_12.csv
+processing /slow-array/NOAA/202408/AIS_2024_08_13.csv
+processing /slow-array/NOAA/202408/AIS_2024_08_14.csv
+processing /slow-array/NOAA/202408/AIS_2024_08_15.csv
+processing /slow-array/NOAA/202408/AIS_2024_08_16.csv
+processing /slow-array/NOAA/202408/AIS_2024_08_17.csv
+processing /slow-array/NOAA/202408/AIS_2024_08_18.csv
+processing /slow-array/NOAA/202408/AIS_2024_08_19.csv
+processing /slow-array/NOAA/202408/AIS_2024_08_20.csv
+processing /slow-array/NOAA/202408/AIS_2024_08_21.csv
+processing /slow-array/NOAA/202408/AIS_2024_08_22.csv
+processing /slow-array/NOAA/202408/AIS_2024_08_23.csv
+processing /slow-array/NOAA/202408/AIS_2024_08_24.csv
+processing /slow-array/NOAA/202408/AIS_2024_08_25.csv
+processing /slow-array/NOAA/202408/AIS_2024_08_26.csv
+processing /slow-array/NOAA/202408/AIS_2024_08_27.csv
+processing /slow-array/NOAA/202408/AIS_2024_08_28.csv
+processing /slow-array/NOAA/202408/AIS_2024_08_29.csv
+processing /slow-array/NOAA/202408/AIS_2024_08_30.csv
+processing /slow-array/NOAA/202408/AIS_2024_08_31.csv
+Skipping row due to CSV parsing error: CSV error: record 2734201 (line: 2734201, byte: 299599006): found record with 16 fields, but the previous record has 17 fields
+Skipping row due to CSV parsing error: CSV parse error: record 2734215 (line 2734215, field: 0, byte: 299600568): invalid utf-8: invalid UTF-8 in field 0 near byte index 1
+Skipping row due to CSV parsing error: CSV error: record 2734238 (line: 2734238, byte: 299603048): found record with 18 fields, but the previous record has 17 fields
+Skipping row due to CSV parsing error: CSV parse error: record 2734262 (line 2734262, field: 4, byte: 299605638): invalid utf-8: invalid UTF-8 in field 4 near byte index 2
+Skipping row due to CSV parsing error: CSV parse error: record 2822543 (line 2822543, field: 0, byte: 310022070): invalid utf-8: invalid UTF-8 in field 0 near byte index 3
+Skipping row due to CSV parsing error: CSV error: record 2822551 (line: 2822551, byte: 310022869): found record with 16 fields, but the previous record has 17 fields
+Skipping row due to CSV parsing error: CSV parse error: record 2822561 (line 2822561, field: 12, byte: 310023956): invalid utf-8: invalid UTF-8 in field 12 near byte index 0
+Skipping row due to CSV parsing error: CSV error: record 2822571 (line: 2822571, byte: 310025048): found record with 16 fields, but the previous record has 17 fields
+thread 'aisdb-decode-5' panicked at aisdb_lib/src/csvreader.rs:561:53:
+called `Result::unwrap()` on an `Err` value: ParseIntError { kind: InvalidDigit }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+Skipping row due to CSV parsing error: CSV error: record 3829139 (line: 3829139, byte: 419819193): found record with 16 fields, but the previous record has 17 fields
+Skipping row due to CSV parsing error: CSV error: record 3829162 (line: 3829162, byte: 419821665): found record with 16 fields, but the previous record has 17 fields
+Skipping row due to CSV parsing error: CSV error: record 3829176 (line: 3829176, byte: 419823190): found record with 16 fields, but the previous record has 17 fields
