@@ -4,7 +4,7 @@ import shutil
 from concurrent.futures import ThreadPoolExecutor
 
 # Define the base directory where the files are stored
-base_dir = "/slow-array/NOAA" 
+base_dir = "/slow-array/ruixin/NOAA" 
 
 # Ensure the base directory exists
 if not os.path.exists(base_dir):
