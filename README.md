@@ -5,7 +5,7 @@ Script breakdown:
 
 - `0-download-ais.py` downloads the AIS files by years specified in command-line arguments.
 - `1-category-by-month.py` organizes downloaded daily AIS files by matching and grouping them into {year}{month} folders for storage.
-- `1-zip2csv-xxxx-xxxx.py` *(deprecated)* unzips the AIS files. This script was created for processing different years, as the data files in early years are in Geodatabase format (`.gdb>
+- `1-zip2csv-xxxx-xxxx.py` *(deprecated)* unzips the AIS files. This script was created for processing different years, as the data files in early years are in Geodatabase format.
 - `2-zip2csv-timerange.py` extracts the organized AIS files and saves them to new paths. Need to specify start and end months. Single thread processing.
 - `2-zip2csv-extract-all.py` extracts the organized all AIS files and saves them to new paths. Multi-thread processing.
 - `2-filter-ais-bbox.py` filters AIS data, retaining only records within a specified geographical bounding box and saving them to a new path.
