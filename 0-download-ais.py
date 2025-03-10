@@ -5,8 +5,8 @@ import argparse
 
 # Set up command-line arguments
 parser = argparse.ArgumentParser(description="Download AIS data from NOAA.")
-parser.add_argument('--start_year', type=int, required=True, help="Start year for downloading data.")
-parser.add_argument('--end_year', type=int, required=True, help="End year for downloading data (exclusive).")
+parser.add_argument('--start-year', type=int, required=True, help="Start year for downloading data.")
+parser.add_argument('--end-year', type=int, required=True, help="End year for downloading data (exclusive).")
 
 # Parse the command-line arguments
 args = parser.parse_args()
