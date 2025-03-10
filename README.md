@@ -14,7 +14,7 @@ Script breakdown:
 - `3-sqlite-noaa.py` loads CSV files into SQLite database.
 - `4-postgresql-database-noaa.py` *(simple)* loads CSV files into a PostgreSQL database.
 - `4-postgresql-database.py` *(deprecated)* old version: CSV -> Spire CSV -> AISdb
-
+- `util.py` contains a bounding box filtering function used by `2-filter-ais-bbox.py`. 
 
 
 Example usage: 
