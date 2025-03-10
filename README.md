@@ -19,7 +19,7 @@ Script breakdown:
 
 Example usage: 
 ```
-python 0-download-ais.py --start_year 2023 --end_year 2024
+python 0-download-ais.py --start-year 2023 --end-year 2024
 python 1-category-by-month.py
 python 2-zip2csv-extract-all.py
 python 2-filter-ais-bbox.py (optional)
