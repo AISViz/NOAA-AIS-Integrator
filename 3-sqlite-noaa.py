@@ -4,8 +4,8 @@ import shutil
 import glob
 import os
 
-# sqlite connection string
-​dbpath = './marine_cadastre_NE_2023_01_02.db'
+dbpath = './marine_cadastre_NE_2023_Jan_Feb.db'
+
 start_year = 2023
 end_year = 2023
 start_month = 1
@@ -30,7 +30,7 @@ def clean_tmp_folders():
 def month_process(year: int, month: int) -> bool:
     print(f'Loading {year}{month:02d}')
 
-    filepaths = aisdb.glob_files(f'/slow-array/NOAA-unzip/{year}{month:02d}', '.csv')
+    filepaths = aisdb.glob_files(f'/slow-array/NOAA-filtered/{year}{month:02d}', '.csv')
     filepaths = sorted([f for f in filepaths if f'{year}{month:02d}' in f])
 
     print(f'Number of files: {len(filepaths)}')
@@ -43,7 +43,7 @@ def month_process(year: int, month: int) -> bool:
                               verbose=True,
                               skip_checksum=True,
                               raw_insertion=True,
-                              workers=4)
+                              workers=6)
     except Exception as e:
         print(f'Error loading {year}{month:02d}: {e}')
         return False

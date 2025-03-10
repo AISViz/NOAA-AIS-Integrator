@@ -12,9 +12,9 @@ PORT = 5432
 DBNAME = 'noaa'
 psql_conn_string = f"postgresql://{USER}:{PASSWORD}@{ADDRESS}:{PORT}/{DBNAME}"
 
-start_year = 2023
-end_year = 2023
-start_month = 1
+start_year = 2017
+end_year = 2017
+start_month = 4
 end_month = 12
 
 failed_batches = set() # store the failed files and loop through them later
@@ -36,7 +36,7 @@ def clean_tmp_folders():
 def month_process(year: int, month: int) -> bool:
     print(f'Loading {year}{month:02d}')
 
-    filepaths = aisdb.glob_files(f'/slow-array/NOAA/{year}{month:02d}', '.zip')
+    filepaths = aisdb.glob_files(f'/slow-array/NOAA-unzip/{year}{month:02d}', '.csv')
     filepaths = sorted([f for f in filepaths if f'{year}{month:02d}' in f])
 
     print(f'Number of files: {len(filepaths)}')
